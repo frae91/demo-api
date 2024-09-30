@@ -33,17 +33,18 @@ class Customers(Resource):
         else:
             return make_response({"error": "Unable to create customer"}, 400)
 
-class CustomerByEmail(Resource):
-    def get(self, customer_email):
-        customer = Customer.query.filter(Customer.email_address == customer_email).first()
+class CustomerById(Resource):
+    def get(self, id):
+        customer = Customer.query.filter(Customer.id == id).first()
+
 
         if customer:
             return make_response(customer.to_dict(), 200)
 
         return make_response({"error": "No customer found!"}, 404)
 
-    def patch(self, customer_email):
-        customer = Customer.query.filter(Customer.email_address == customer_email).first()
+    def patch(self, id):
+        customer = Customer.query.filter(Customer.id == id).first()
 
         if customer:
             for attr in request.json:
@@ -55,8 +56,8 @@ class CustomerByEmail(Resource):
 
         make_response({"error": "No customer found"}, 404)
 
-    def delete(self, customer_email):
-        customer = Customer.query.filter(Customer.email_address == customer_email).first()
+    def delete(self, id):
+        customer = Customer.query.filter(Customer.id == id).first()
 
         if customer:
             db.session.delete(customer)
@@ -119,6 +120,6 @@ class ReservationById(Resource):
         make_response({"error": "No reservation found"}, 404)
 
 api.add_resource(Customers, '/customers')
-api.add_resource(CustomerByEmail, '/customers/<string:customer_email>')
+api.add_resource(CustomerById, '/customers/<int:id>')
 api.add_resource(Reservations, '/reservations')
 api.add_resource(ReservationById, '/reservations/<int:id>')
