@@ -19,6 +19,14 @@ api = Api(app)
 class Customers(Resource):
 
     def get(self):
+        if 'email' in request.args:
+            customer = Customer.query.filter(Customer.email_address == request.args.get('email')).first()
+
+            if customer:
+                return make_response(customer.to_dict(), 200)
+            
+            return make_response({"error": f"No customer found with the email address {request.args.get('email')}"})
+
         customers = [customer.to_dict() for customer in Customer.query.all()]
         return make_response(jsonify(customers), 200)
 
@@ -67,6 +75,10 @@ class CustomerById(Resource):
             return make_response({"message": "Delete successful"}, 200)
 
         make_response({"error": "No customer found"}, 404)
+
+# class CustomerByEmail(Resource):
+#     def get(self):
+#         email_address = request.args.get('')
 
 class Reservations(Resource):
     def get(self):
